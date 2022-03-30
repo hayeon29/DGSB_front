@@ -1,0 +1,5 @@
+# ninja log v5
+3	15795	670337692	CMakeFiles/native-lib.dir/native-lib.cpp.o	f167b183db96ba26
+15808	16597	670337693	D:/Users/yunyo/android/DGSB_front/app/build/intermediates/cxx/Debug/122l501g/obj/arm64-v8a/libnative-lib.so	f51bd62690a2d5bb
+18	5495	670338105	CMakeFiles/native-lib.dir/native-lib.cpp.o	f167b183db96ba26
+5496	6344	670338105	D:/Users/yunyo/android/DGSB_front/app/build/intermediates/cxx/Debug/122l501g/obj/arm64-v8a/libnative-lib.so	f51bd62690a2d5bb

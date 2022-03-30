@@ -1,0 +1,3 @@
+D:/Users/yunyo/android/teamproject6/app/.cxx/Debug/113h19m6/x86/CMakeFiles/native-lib.dir
+D:/Users/yunyo/android/teamproject6/app/.cxx/Debug/113h19m6/x86/CMakeFiles/edit_cache.dir
+D:/Users/yunyo/android/teamproject6/app/.cxx/Debug/113h19m6/x86/CMakeFiles/rebuild_cache.dir
