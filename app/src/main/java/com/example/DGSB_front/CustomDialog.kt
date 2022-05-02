@@ -1,4 +1,4 @@
-package com.example.teamproject6
+package com.example.DGSB_front
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import com.example.teamproject6.databinding.DialogBinding
+import com.example.DGSB_front.databinding.DialogBinding
 
 class CustomDialog(val finishApp:() -> Unit): DialogFragment() {
     private var _binding: DialogBinding? = null

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="@layout/activity_camera">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/black"
+        android:layout_alignParentBottom="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/cameraBtn"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/shape_for_circle_button" />
+
+            <LinearLayout
+                android:id="@+id/frameSetLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingRight="5dp">
+
+                <Button
+                    android:id="@+id/frameMinusBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="#FFBB00"
+                    android:textColor="@color/white"
+                    android:text="-"
+                    android:textSize="20sp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/frameText"
+                    android:layout_width="65dp"
+                    android:layout_height="40dp"
+                    android:background="@color/white"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="10frame"
+                    android:gravity="center"/>
+
+                <Button
+                    android:id="@+id/framePlusBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="#FFBB00"
+                    android:textColor="@color/white"
+                    android:text="+"
+                    android:textSize="20sp"
+                    android:gravity="center"/>
+            </LinearLayout>
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

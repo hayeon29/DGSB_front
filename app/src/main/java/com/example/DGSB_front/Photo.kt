@@ -1,4 +1,5 @@
-package com.example.teamproject6
+package com.example.DGSB_front
+
 
 import android.graphics.Bitmap
 import android.os.Build

@@ -1,0 +1,10 @@
+# ninja log v5
+1	3223	670700510	CMakeFiles/native-lib.dir/native-lib.cpp.o	4f8a0db41a4188d6
+3236	3910	670700510	D:/Users/yunyo/android/DGSB_front/app/build/intermediates/cxx/Debug/122l501g/obj/x86_64/libnative-lib.so	9514b41538c5ab34
+0	40	0	clean	577bc002c0bafc13
+0	55	0	clean	577bc002c0bafc13
+1	42	0	clean	577bc002c0bafc13
+1	52	0	clean	577bc002c0bafc13
+0	65	0	clean	577bc002c0bafc13
+13	3676	672782848	CMakeFiles/native-lib.dir/native-lib.cpp.o	4f8a0db41a4188d6
+3677	4583	672782849	D:/Users/yunyo/android/DGSB_front/app/build/intermediates/cxx/Debug/122l501g/obj/x86_64/libnative-lib.so	9514b41538c5ab34

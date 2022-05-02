@@ -1,26 +1,30 @@
-package com.example.teamproject6
+package com.example.DGSB_front
+
 
 import android.Manifest
-import android.R.attr.bitmap
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.os.AsyncTask
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Base64
+import android.provider.MediaStore
 import android.util.Log
 import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
+import androidx.annotation.Nullable
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import org.opencv.android.BaseLoaderCallback
-import org.opencv.android.CameraBridgeViewBase
-import org.opencv.android.LoaderCallbackInterface
-import org.opencv.android.OpenCVLoader
+import androidx.appcompat.widget.AppCompatButton
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import org.opencv.android.*
+import org.opencv.core.CvException
 import org.opencv.core.Mat
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,20 +32,20 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.*
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
+import java.util.*
 
 
 class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewListener2 {
     private var matInput: Mat? = null //openCV에서 가장 기본이 되는 구조체. Matrix
     private var matResult: Mat? = null
     private val baseUrl: String = "https://127.0.0.1:8000/"
+    private var currentPhotoPath: String = ""
 
     private var mOpenCvCameraView: CameraBridgeViewBase? = null
     private var networkService: NetworkService? = null
-    external fun ConvertRGBtoGray(matAddrInput: Long, matAddrResult: Long) //RGB를 그레이스케일로 변환시키는 함수
-
+    lateinit var cameraBtn: AppCompatButton
+    external fun ConvertRGBtoGray(matAddrInput: Long, matAddrResult: Long)
+    external fun convertMatToArray(matAddr: Long, array: ByteArray)
 
     companion object {
         private const val TAG = "opencv"
@@ -49,10 +53,19 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         //여기서부턴 퍼미션 관련 메소드
         private const val CAMERA_PERMISSION_REQUEST_CODE = 200
 
+
         init {
             System.loadLibrary("opencv_java4")
             System.loadLibrary("native-lib")
         }
+    }
+
+    private fun initNetwork(baseURL: String){
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(baseURL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        networkService = retrofit.create(NetworkService::class.java)
     }
 
     private val mLoaderCallback: BaseLoaderCallback = object : BaseLoaderCallback(this) {
@@ -69,8 +82,10 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
     }
     //모듈을 로드하는 함수
 
+    @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -80,15 +95,137 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
         ) //액티비티 화면 켜짐 유지
         setContentView(R.layout.activity_camera)
+
+
         mOpenCvCameraView = findViewById<View>(R.id.activity_surface_view) as CameraBridgeViewBase
         mOpenCvCameraView!!.visibility = SurfaceView.VISIBLE
         mOpenCvCameraView!!.setCvCameraViewListener(this)
         mOpenCvCameraView!!.setCameraIndex(0) // front-camera(1),  back-camera(0)
-
+        cameraBtn = findViewById<AppCompatButton>(R.id.cameraBtn)
         initNetwork(baseUrl)
+
+        cameraBtn.setOnClickListener {
+            onButtonClicked()
+        }
     }
 
-    external fun convertMatToArray(matAddr: Mat?, array: ByteArray)
+
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun onButtonClicked(){
+//        var photoFile: File? = null
+//        try {
+//            photoFile = createImageFile()
+//        } catch (ex: IOException) {
+//            // Error occurred while creating the File
+//            Log.e("DGSB_FRONT", ex.message.toString())
+//        }
+//        if (photoFile != null) {
+//            val providerURI = FileProvider.getUriForFile(
+//                this,
+//                "com.example.DGSB_front",
+//                photoFile
+//            )
+//        }
+        var bmp: Bitmap? = null
+        try {
+            bmp = Bitmap.createBitmap(matResult!!.cols(), matResult!!.rows(), Bitmap.Config.ARGB_8888)
+            Utils.matToBitmap(matResult, bmp)
+        } catch (e: CvException) {
+            Log.d("Exception", e.message!!)
+        }
+        var uri: Uri? = null
+        uri = getImageUri(applicationContext, bmp!!)
+        Log.d("Uri: ", uri.toString())
+        val filePath: String? = getRealPathFromURI(uri!!)
+        Log.d("Uri Path: ", filePath.toString())
+        //saveFile(uri!!)
+        uploadPhoto(filePath!!)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE && resultCode == RESULT_OK) {
+            val test = Uri.fromFile(File(currentPhotoPath))
+            saveFile(test)
+        }
+    }
+
+    private fun getRealPathFromURI(contentURI: Uri): String? {
+        val result: String?
+        val cursor = contentResolver.query(contentURI, null, null, null, null)
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            result = contentURI.path
+        } else {
+            cursor.moveToFirst()
+            val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+            result = cursor.getString(idx)
+            cursor.close()
+        }
+        return result
+    }
+
+
+    // 파일 저장
+    private fun saveFile(image_uri: Uri) {
+        val values = ContentValues()
+        val fileName = "DGSB_FRONT" + System.currentTimeMillis() + ".png"
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/*")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Images.Media.IS_PENDING, 1)
+        }
+        val contentResolver = contentResolver
+        val item = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        try {
+            val pdf = contentResolver.openFileDescriptor(item!!, "w", null)
+            if (pdf == null) {
+                Log.d("DGSB_FRONT", "null")
+            } else {
+                val inputData: ByteArray = getBytes(image_uri)!!
+                val fos = FileOutputStream(pdf.fileDescriptor)
+                fos.write(inputData)
+                fos.close()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    values.clear()
+                    values.put(MediaStore.Images.Media.IS_PENDING, 0)
+                    contentResolver.update(item, values, null, null)
+                }
+
+                // 갱신
+                //galleryAddPic(fileName)
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+            Log.d("DGSB_FRONT", "FileNotFoundException  : " + e.localizedMessage)
+        } catch (e: Exception) {
+            Log.d("DGSB_FRONT", "FileOutputStream = : " + e.message)
+        }
+    }
+
+    // Uri to ByteArr
+    @Throws(IOException::class)
+    fun getBytes(image_uri: Uri?): ByteArray? {
+        val iStream = contentResolver.openInputStream(image_uri!!)
+        val byteBuffer = ByteArrayOutputStream()
+        val bufferSize = 1024 // 버퍼 크기
+        val buffer = ByteArray(bufferSize) // 버퍼 배열
+        var len = 0
+        // InputStream에서 읽어올 게 없을 때까지 바이트 배열에 쓴다.
+        while (iStream!!.read(buffer).also { len = it } != -1) byteBuffer.write(buffer, 0, len)
+        return byteBuffer.toByteArray()
+    }
+
+    private fun getImageUri(context: Context, inImage: Bitmap): Uri? {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path = MediaStore.Images.Media.insertImage(
+            context.getContentResolver(),
+            inImage,
+            "DGSBfile",
+            null
+        )
+        return Uri.parse(path)
+    }
 
     public override fun onPause() {
         super.onPause()
@@ -114,39 +251,42 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
     override fun onCameraViewStarted(width: Int, height: Int) {}
     override fun onCameraViewStopped() {}
     override fun onCameraFrame(inputFrame: CameraBridgeViewBase.CvCameraViewFrame): Mat {
-        var bitResult: ByteArray? = null
+
         matInput = inputFrame.rgba()
-        bitResult = ByteArray(matInput!!.rows() * matInput!!.cols() * matInput!!.channels())
-        matInput!!.get(0, 0, bitResult)
         //matInput 객체의 원래 주소를 얻어 그레이스케일한 후 matResult의 nativeObjAddr에 값 부여
-        val file: Photo = Photo(Base64.encodeToString(bitResult, Base64.NO_WRAP))
-        onFilePost(file)
-        return matInput!!
+        if (matResult == null) matResult = Mat(matInput!!.rows(), matInput!!.cols(), matInput!!.type())
+        matResult = matInput!!.clone()
+//        val bitResult: ByteArray = ByteArray(matInput!!.cols())
+//        matInput!!.get(0, 0, bitResult)
+//        val file: Photo = Photo(Base64.encodeToString(bitResult, Base64.NO_WRAP))
+//        onFilePost(file)
+        return matResult!!
         //matResult를 반환한다
     }
 
-    protected val cameraViewList: List<CameraBridgeViewBase>
+    private val cameraViewList: List<CameraBridgeViewBase>
         get() = listOf(mOpenCvCameraView) as List<CameraBridgeViewBase>
 
-    protected fun onCameraPermissionGranted() {
-        val cameraViews = cameraViewList ?: return
-        for (cameraBridgeViewBase in cameraViews) {
-            cameraBridgeViewBase.setCameraPermissionGranted()
-        }
-    }
 
-    private fun initNetwork(baseURL: String){
+    private fun uploadPhoto(image_path: String) {
+        val imageFile = File(image_path)
+        val baseURL = "https://d41f-49-143-95-140.jp.ngrok.io/image/"
+
+
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(baseURL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        networkService = retrofit.create(NetworkService::class.java)
-    }
 
-    private fun onFilePost(file: Photo){
-        val postPhoto: Call<Photo> = networkService!!.post_photo(file)
-        postPhoto.enqueue(object: Callback<Photo>{
-            override fun onResponse(call: Call<Photo>, response: Response<Photo>){
+
+
+        val postApi: NetworkService = retrofit.create(NetworkService::class.java)
+        val requestBody = RequestBody.create(MediaType.parse("multipart/data"), imageFile)
+        val multiPartBody = MultipartBody.Part
+            .createFormData("model_pic", imageFile.name, requestBody)
+        val call = postApi.uploadFile(multiPartBody)
+        call!!.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 if(response.isSuccessful){
                     Log.i("project", "Success")
                 }else run {
@@ -155,91 +295,36 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
                 }
             }
 
-            override fun onFailure(call: Call<Photo>, t: Throwable) {
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 Log.i("project", "FailMessage: " + t.message)
             }
         })
     }
-
-    private fun onFilePatch(file: Photo){
-        val patchPhoto: Call<Photo> = networkService!!.patch_photo(file)!!
-        patchPhoto.enqueue(object: Callback<Photo>{
-            override fun onResponse(call: Call<Photo>, response: Response<Photo>) {
-                if(response.isSuccessful){
-                    Log.i("project", "Success")
-                }else run {
-                    val statusCode: Int = response.code()
-                    Log.i("project", "StatusCode: " + statusCode)
-                }
-            }
-
-            override fun onFailure(call: Call<Photo>, t: Throwable) {
-                Log.i("project", "FailMessage: " + t.message)
-            }
-        })
-    }
-
-    private fun onFileUpload(buffer: ByteArray){
-        var conn: HttpURLConnection? = null
-        var outStream: DataOutputStream? = null
-        var inStream: DataInputStream? = null
-        val endString: String = "\r\n"
-        var bufferSize: Int = buffer.size
-        val urlString: String = "http://127.0.0.1:8000/"   // server ip
-        try{
-            val url: URL = URL(urlString)
-            conn = url.openConnection() as HttpURLConnection
-            conn.doInput = true
-            conn.doOutput = true
-            conn.useCaches = false
-            conn.requestMethod = "POST"
-            conn.setRequestProperty("Connection", "Keep-Alive")
-            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + " ")
-            outStream = DataOutputStream(conn.outputStream)
-            outStream.writeBytes(endString)
-            //outStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + path + "\"" + endString)
-            outStream.writeBytes(endString)
-            outStream.write(buffer, 0, bufferSize)
-            outStream.writeBytes(endString)
-            outStream.writeBytes(endString)
-
-            Log.e("Debug", "File is written")
-            outStream.flush()
-            outStream.close()
-        } catch(ex: MalformedURLException){
-            Log.e("Debug", "error: " + ex.message, ex)
-        } catch(ioe: IOException){
-            Log.e("Debug", "error: " + ioe.message, ioe)
-        }
-
-        try{
-            if (conn != null) {
-                inStream = DataInputStream(conn.inputStream)
-            }
-            var str: String = inStream?.readLine()!!
-            while(str.isEmpty()) {
-                Log.e("Debug", "server response" + str)
-                str = inStream.readLine()!!
-            }
-            inStream.close()
-        } catch (ioex: IOException){
-            Log.e("Debug", "error: " + ioex.message, ioex)
-        }
-    }
-
 
 
     override fun onStart() {
         super.onStart()
         var havePermission = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                    arrayOf(Manifest.permission.CAMERA),
+                    CAMERA_PERMISSION_REQUEST_CODE
+                )
                 havePermission = false
             }
         }
         if (havePermission) {
             onCameraPermissionGranted()
+        }
+    }
+
+    private fun onCameraPermissionGranted() {
+        val cameraViews = cameraViewList
+        for (cameraBridgeViewBase in cameraViews) {
+            cameraBridgeViewBase.setCameraPermissionGranted()
         }
     }
 
@@ -249,7 +334,10 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE &&
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
             onCameraPermissionGranted()
         } else {
             showDialogForPermission("앱을 실행하려면 퍼미션을 허가하셔야합니다.")
@@ -265,15 +353,19 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         builder.setCancelable(false)
         builder.setPositiveButton(
             "예"
-        ) { dialog, id ->
+        ) { _, _ ->
             requestPermissions(
-                arrayOf(Manifest.permission.CAMERA),
+                arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ),
                 CAMERA_PERMISSION_REQUEST_CODE
             )
         }
         builder.setNegativeButton(
             "아니오"
-        ) { arg0, arg1 -> finish() }
+        ) { _, _ -> finish() }
         builder.create().show()
     }
 }

@@ -1,0 +1,11 @@
+# ninja log v5
+1	52	0	clean	577bc002c0bafc13
+2	3847	670700497	CMakeFiles/native-lib.dir/native-lib.cpp.o	1953725212215162
+3860	4507	670700498	D:/Users/yunyo/android/DGSB_front/app/build/intermediates/cxx/Debug/122l501g/obj/armeabi-v7a/libnative-lib.so	d1f27bc5259983f1
+1	93	0	clean	577bc002c0bafc13
+1	51	0	clean	577bc002c0bafc13
+0	42	0	clean	577bc002c0bafc13
+0	51	0	clean	577bc002c0bafc13
+2	65	0	clean	577bc002c0bafc13
+16	4279	672782843	CMakeFiles/native-lib.dir/native-lib.cpp.o	1953725212215162
+4281	5034	672782844	D:/Users/yunyo/android/DGSB_front/app/build/intermediates/cxx/Debug/122l501g/obj/armeabi-v7a/libnative-lib.so	d1f27bc5259983f1

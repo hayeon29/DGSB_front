@@ -1,26 +1,10 @@
-package com.example.teamproject6
+package com.example.DGSB_front
 
-import android.Manifest.permission
-import android.annotation.TargetApi
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.SurfaceView
-import android.view.View
-import android.view.WindowInsets
-import android.view.WindowManager
+import android.os.Handler
 import android.widget.Button
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import org.opencv.android.BaseLoaderCallback
-import org.opencv.android.CameraBridgeViewBase
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2
-import org.opencv.android.LoaderCallbackInterface
-import org.opencv.android.OpenCVLoader
-import org.opencv.core.Mat
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,6 +30,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
 
     private fun showMessageDialog(){
         val customDialog = CustomDialog(finishApp = {finish()})

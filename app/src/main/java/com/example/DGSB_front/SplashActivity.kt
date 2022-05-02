@@ -1,25 +1,25 @@
-package com.example.teamproject6
+package com.example.DGSB_front
 
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
+
+import android.content.Intent
+
 import android.os.Bundle
 import android.os.Handler
-import android.content.Intent
+
+import androidx.appcompat.app.AppCompatActivity
 
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-
-        loadingstart()
-    }
-
-    private fun loadingstart() {
         val handler = Handler()
-        handler.postDelayed(Runnable {
-            val intent = Intent(applicationContext, MainActivity::class.java)
+        handler.postDelayed({
+            val intent = Intent(baseContext, MainActivity::class.java)
             startActivity(intent)
             finish()
-        }, 2000)
+        }, 3000)
     }
+
 }
