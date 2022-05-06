@@ -19,10 +19,6 @@ import androidx.annotation.Nullable
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import org.opencv.android.*
 import org.opencv.core.CvException
 import org.opencv.core.Mat
@@ -33,13 +29,26 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.*
 import java.util.*
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+
+import okhttp3.logging.HttpLoggingInterceptor
+
+
+
 
 
 class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewListener2 {
     private var matInput: Mat? = null //openCV에서 가장 기본이 되는 구조체. Matrix
     private var matResult: Mat? = null
-    private val baseUrl: String = "https://127.0.0.1:8000/"
+    private val baseUrl: String = "http://15.164.143.254:8000/"
     private var currentPhotoPath: String = ""
+    private var headers: MutableMap<String, String> = mutableMapOf()
+    private var filePath: String? = ""
 
     private var mOpenCvCameraView: CameraBridgeViewBase? = null
     private var networkService: NetworkService? = null
@@ -56,15 +65,22 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
 
         init {
             System.loadLibrary("opencv_java4")
+            System.loadLibrary("opencv_java4")
             System.loadLibrary("native-lib")
         }
     }
 
     private fun initNetwork(baseURL: String){
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(baseURL)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
         networkService = retrofit.create(NetworkService::class.java)
     }
 
@@ -97,6 +113,7 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         setContentView(R.layout.activity_camera)
 
 
+
         mOpenCvCameraView = findViewById<View>(R.id.activity_surface_view) as CameraBridgeViewBase
         mOpenCvCameraView!!.visibility = SurfaceView.VISIBLE
         mOpenCvCameraView!!.setCvCameraViewListener(this)
@@ -112,20 +129,7 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
 
     @SuppressLint("QueryPermissionsNeeded")
     private fun onButtonClicked(){
-//        var photoFile: File? = null
-//        try {
-//            photoFile = createImageFile()
-//        } catch (ex: IOException) {
-//            // Error occurred while creating the File
-//            Log.e("DGSB_FRONT", ex.message.toString())
-//        }
-//        if (photoFile != null) {
-//            val providerURI = FileProvider.getUriForFile(
-//                this,
-//                "com.example.DGSB_front",
-//                photoFile
-//            )
-//        }
+
         var bmp: Bitmap? = null
         try {
             bmp = Bitmap.createBitmap(matResult!!.cols(), matResult!!.rows(), Bitmap.Config.ARGB_8888)
@@ -136,10 +140,9 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         var uri: Uri? = null
         uri = getImageUri(applicationContext, bmp!!)
         Log.d("Uri: ", uri.toString())
-        val filePath: String? = getRealPathFromURI(uri!!)
+        filePath = getRealPathFromURI(uri!!)
         Log.d("Uri Path: ", filePath.toString())
-        //saveFile(uri!!)
-        uploadPhoto(filePath!!)
+        getAuth()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
@@ -218,12 +221,8 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
     private fun getImageUri(context: Context, inImage: Bitmap): Uri? {
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(
-            context.getContentResolver(),
-            inImage,
-            "DGSBfile",
-            null
-        )
+        val path =
+            MediaStore.Images.Media.insertImage(context.contentResolver, inImage, "DGSBphoto", null)
         return Uri.parse(path)
     }
 
@@ -256,10 +255,6 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         //matInput 객체의 원래 주소를 얻어 그레이스케일한 후 matResult의 nativeObjAddr에 값 부여
         if (matResult == null) matResult = Mat(matInput!!.rows(), matInput!!.cols(), matInput!!.type())
         matResult = matInput!!.clone()
-//        val bitResult: ByteArray = ByteArray(matInput!!.cols())
-//        matInput!!.get(0, 0, bitResult)
-//        val file: Photo = Photo(Base64.encodeToString(bitResult, Base64.NO_WRAP))
-//        onFilePost(file)
         return matResult!!
         //matResult를 반환한다
     }
@@ -270,25 +265,17 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
 
     private fun uploadPhoto(image_path: String) {
         val imageFile = File(image_path)
-        val baseURL = "https://d41f-49-143-95-140.jp.ngrok.io/image/"
-
-
-        val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(baseURL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-
-
-        val postApi: NetworkService = retrofit.create(NetworkService::class.java)
-        val requestBody = RequestBody.create(MediaType.parse("multipart/data"), imageFile)
-        val multiPartBody = MultipartBody.Part
-            .createFormData("model_pic", imageFile.name, requestBody)
-        val call = postApi.uploadFile(multiPartBody)
+        var body: MultipartBody.Part? = null
+        val requestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), imageFile)
+        body = MultipartBody.Part.createFormData("photo", imageFile.name, requestBody)
+        Log.d("nama file e cuk", imageFile.name)
+        val call = networkService!!.uploadFile(headers, body)
         call!!.enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 if(response.isSuccessful){
                     Log.i("project", "Success")
+                    Log.i("result", response.headers().toString())
+                    Log.i("result", response.body().toString())
                 }else run {
                     val statusCode: Int = response.code()
                     Log.i("project", "StatusCode: " + statusCode)
@@ -301,6 +288,29 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         })
     }
 
+    private fun getAuth(){
+        val call = networkService!!.getAuth()
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                if(response.isSuccessful){
+                    Log.i("project", "Success")
+                    Log.i("response", response.headers().toString())
+                    val cookies = response.headers()["Set-Cookie"]
+                    val cookie = cookies!!.split("=", ";")
+                    val token = cookie[1]
+                    headers["X-CSRFToken"] = token
+                    uploadPhoto(filePath!!)
+                }else run {
+                    val statusCode: Int = response.code()
+                    Log.i("project", "StatusCode: " + statusCode)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                Log.i("project", "FailMessage: " + t.message)
+            }
+        })
+    }
 
     override fun onStart() {
         super.onStart()

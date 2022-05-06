@@ -1,7 +1,0 @@
-Executable : D:\Users\yunyo\AppData\Local\Android\Sdk\cmake\3.10.2.4988404\bin\ninja.exe
-arguments : 
--C
-D:\Users\yunyo\android\DGSB_front\app\.cxx\Debug\122l501g\armeabi-v7a
-native-lib
-jvmArgs : 
-

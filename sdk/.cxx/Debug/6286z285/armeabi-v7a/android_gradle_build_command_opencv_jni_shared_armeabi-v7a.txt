@@ -1,7 +1,0 @@
-Executable : D:\Users\yunyo\AppData\Local\Android\Sdk\cmake\3.10.2.4988404\bin\ninja.exe
-arguments : 
--C
-D:\Users\yunyo\android\DGSB_front\sdk\.cxx\Debug\6286z285\armeabi-v7a
-opencv_jni_shared
-jvmArgs : 
-

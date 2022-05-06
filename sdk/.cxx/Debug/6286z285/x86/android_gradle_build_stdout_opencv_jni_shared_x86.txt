@@ -1,2 +1,0 @@
-ninja: Entering directory `D:\Users\yunyo\android\DGSB_front\sdk\.cxx\Debug\6286z285\x86'
-ninja: no work to do.
