@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.SurfaceView
 import android.view.View
@@ -42,13 +43,14 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 
 
-class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewListener2 {
+class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewListener2, TextToSpeech.OnInitListener {
     private var matInput: Mat? = null //openCV에서 가장 기본이 되는 구조체. Matrix
     private var matResult: Mat? = null
     private val baseUrl: String = "http://15.164.143.254:8000/"
     private var currentPhotoPath: String = ""
     private var headers: MutableMap<String, String> = mutableMapOf()
     private var filePath: String? = ""
+    private var tts: TextToSpeech? = null
 
     private var mOpenCvCameraView: CameraBridgeViewBase? = null
     private var networkService: NetworkService? = null
@@ -112,17 +114,18 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         ) //액티비티 화면 켜짐 유지
         setContentView(R.layout.activity_camera)
 
-
-
         mOpenCvCameraView = findViewById<View>(R.id.activity_surface_view) as CameraBridgeViewBase
         mOpenCvCameraView!!.visibility = SurfaceView.VISIBLE
         mOpenCvCameraView!!.setCvCameraViewListener(this)
         mOpenCvCameraView!!.setCameraIndex(0) // front-camera(1),  back-camera(0)
         cameraBtn = findViewById<AppCompatButton>(R.id.cameraBtn)
+        tts = TextToSpeech(this, this)
+
         initNetwork(baseUrl)
 
         cameraBtn.setOnClickListener {
-            onButtonClicked()
+            //onButtonClicked()
+            speakOut()
         }
     }
 
@@ -244,6 +247,10 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
 
     public override fun onDestroy() {
         super.onDestroy()
+        if(tts == null){
+            tts!!.stop()
+            tts!!.shutdown()
+        }
         if (mOpenCvCameraView != null) mOpenCvCameraView!!.disableView()
     }
 
@@ -379,5 +386,25 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
             "아니오"
         ) { _, _ -> finish() }
         builder.create().show()
+    }
+
+    override fun onInit(status: Int) {
+        if(status == TextToSpeech.SUCCESS){
+            val result: Int = tts!!.setLanguage(Locale.KOREA)
+            if(result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA){
+                Log.e("TTS", "This Language is not supported")
+            } else {
+                speakOut()
+            }
+        } else {
+            Log.e("TTS", "Initialization Failed")
+        }
+    }
+
+    private fun speakOut() {
+        val text: CharSequence = "안녕하세요."
+        tts!!.setPitch(0.6f)
+        tts!!.setSpeechRate(0.1f)
+        tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null, "id1")
     }
 }
