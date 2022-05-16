@@ -12,7 +12,7 @@ interface NetworkService {
 
     @Multipart
     @POST("api/handle-detection/")
-    fun uploadFile(@HeaderMap headers: Map<String, String>, @Part file: MultipartBody.Part): Call<ResponseBody?>?
+    fun uploadFile(@Part file: MultipartBody.Part): Call<ResponseBody>
 
     @GET("admin/")
     fun getAuth(): Call<ResponseBody>

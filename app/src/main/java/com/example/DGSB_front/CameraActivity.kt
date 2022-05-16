@@ -142,7 +142,7 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         Log.d("Uri: ", uri.toString())
         filePath = getRealPathFromURI(uri!!)
         Log.d("Uri Path: ", filePath.toString())
-        getAuth()
+        uploadPhoto(filePath!!)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
@@ -171,7 +171,7 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
     // 파일 저장
     private fun saveFile(image_uri: Uri) {
         val values = ContentValues()
-        val fileName = "DGSB_FRONT" + System.currentTimeMillis() + ".png"
+        val fileName = "DGSB_FRONT_" + System.currentTimeMillis() + ".jpg"
         values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/*")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -222,7 +222,7 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
         val path =
-            MediaStore.Images.Media.insertImage(context.contentResolver, inImage, "DGSBphoto", null)
+            MediaStore.Images.Media.insertImage(context.contentResolver, inImage, "DGSB_FRONT_" + System.currentTimeMillis() + ".jpg", null)
         return Uri.parse(path)
     }
 
@@ -269,20 +269,22 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         val requestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), imageFile)
         body = MultipartBody.Part.createFormData("photo", imageFile.name, requestBody)
         Log.d("nama file e cuk", imageFile.name)
-        val call = networkService!!.uploadFile(headers, body)
-        call!!.enqueue(object : Callback<ResponseBody?> {
-            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+        val call = networkService!!.uploadFile(body)
+        call!!.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.isSuccessful){
                     Log.i("project", "Success")
-                    Log.i("result", response.headers().toString())
-                    Log.i("result", response.body().toString())
+                    val resultBody = response.body()
+                    val resultString: String = resultBody!!.string()
+                    Log.i("header_result", response.headers().toString())
+                    Log.i("body_result", resultString)
                 }else run {
                     val statusCode: Int = response.code()
                     Log.i("project", "StatusCode: " + statusCode)
                 }
             }
 
-            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Log.i("project", "FailMessage: " + t.message)
             }
         })
