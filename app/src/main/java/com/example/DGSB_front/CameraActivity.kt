@@ -1,16 +1,18 @@
 package com.example.DGSB_front
 
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.media.MediaActionSound
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.SurfaceView
@@ -39,24 +41,27 @@ import okhttp3.OkHttpClient
 
 import okhttp3.logging.HttpLoggingInterceptor
 
+import android.widget.Toast
 
-
-
+import android.speech.RecognitionListener
+import android.widget.Button
+import java.util.concurrent.TimeUnit
 
 class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewListener2, TextToSpeech.OnInitListener {
     private var matInput: Mat? = null //openCV에서 가장 기본이 되는 구조체. Matrix
     private var matResult: Mat? = null
-    private val baseUrl: String = "http://15.164.143.254:8000/"
+    private var recording: Boolean = false
+    private val baseUrl: String = "http://34.229.31.234:8000/"
     private var currentPhotoPath: String = ""
     private var headers: MutableMap<String, String> = mutableMapOf()
     private var filePath: String? = ""
     private var tts: TextToSpeech? = null
+    private val sound: MediaActionSound = MediaActionSound()
+    private var speechRecognizer: SpeechRecognizer? = null
 
     private var mOpenCvCameraView: CameraBridgeViewBase? = null
     private var networkService: NetworkService? = null
     lateinit var cameraBtn: AppCompatButton
-    external fun ConvertRGBtoGray(matAddrInput: Long, matAddrResult: Long)
-    external fun convertMatToArray(matAddr: Long, array: ByteArray)
 
     companion object {
         private const val TAG = "opencv"
@@ -67,18 +72,20 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
 
         init {
             System.loadLibrary("opencv_java4")
-            System.loadLibrary("opencv_java4")
-            System.loadLibrary("native-lib")
         }
     }
 
-    private fun initNetwork(baseURL: String){
+    private fun String.initNetwork() {
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+        val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor)
+            .connectTimeout(10, TimeUnit.MINUTES)
+            .readTimeout(10, TimeUnit.MINUTES)
+            .writeTimeout(10, TimeUnit.MINUTES)
+            .build()
 
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(baseURL)
+            .baseUrl(this)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -121,18 +128,23 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         cameraBtn = findViewById<AppCompatButton>(R.id.cameraBtn)
         tts = TextToSpeech(this, this)
 
-        initNetwork(baseUrl)
+
+        intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, packageName)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR")
+
+        baseUrl.initNetwork()
 
         cameraBtn.setOnClickListener {
-            //onButtonClicked()
-            speakOut()
+            onButtonClicked()
         }
-    }
 
+
+    }
 
     @SuppressLint("QueryPermissionsNeeded")
     private fun onButtonClicked(){
-
+        sound.play(MediaActionSound.SHUTTER_CLICK)
         var bmp: Bitmap? = null
         try {
             bmp = Bitmap.createBitmap(matResult!!.cols(), matResult!!.rows(), Bitmap.Config.ARGB_8888)
@@ -196,9 +208,6 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
                     values.put(MediaStore.Images.Media.IS_PENDING, 0)
                     contentResolver.update(item, values, null, null)
                 }
-
-                // 갱신
-                //galleryAddPic(fileName)
             }
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
@@ -247,9 +256,15 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
 
     public override fun onDestroy() {
         super.onDestroy()
-        if(tts == null){
+        if(tts != null){
             tts!!.stop()
             tts!!.shutdown()
+            tts = null
+        }
+        if(speechRecognizer != null){
+            speechRecognizer!!.destroy()
+            speechRecognizer!!.cancel()
+            speechRecognizer = null
         }
         if (mOpenCvCameraView != null) mOpenCvCameraView!!.disableView()
     }
@@ -275,19 +290,18 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         var body: MultipartBody.Part? = null
         val requestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), imageFile)
         body = MultipartBody.Part.createFormData("photo", imageFile.name, requestBody)
-        Log.d("nama file e cuk", imageFile.name)
         val call = networkService!!.uploadFile(body)
-        call!!.enqueue(object : Callback<ResponseBody> {
+        call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.isSuccessful){
                     Log.i("project", "Success")
                     val resultBody = response.body()
                     val resultString: String = resultBody!!.string()
-                    Log.i("header_result", response.headers().toString())
                     Log.i("body_result", resultString)
+                    speakOut(resultString)
                 }else run {
                     val statusCode: Int = response.code()
-                    Log.i("project", "StatusCode: " + statusCode)
+                    Log.i("project", "StatusCode: $statusCode")
                 }
             }
 
@@ -296,6 +310,8 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
             }
         })
     }
+
+
 
     private fun getAuth(){
         val call = networkService!!.getAuth()
@@ -311,7 +327,7 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
                     uploadPhoto(filePath!!)
                 }else run {
                     val statusCode: Int = response.code()
-                    Log.i("project", "StatusCode: " + statusCode)
+                    Log.i("project", "StatusCode: $statusCode")
                 }
             }
 
@@ -327,9 +343,17 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(
-                    arrayOf(Manifest.permission.CAMERA),
+                    arrayOf(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.INTERNET,
+                        Manifest.permission.RECORD_AUDIO
+                    ),
                     CAMERA_PERMISSION_REQUEST_CODE
                 )
                 havePermission = false
@@ -359,16 +383,16 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         ) {
             onCameraPermissionGranted()
         } else {
-            showDialogForPermission("앱을 실행하려면 퍼미션을 허가하셔야합니다.")
+            "앱을 실행하려면 퍼미션을 허가하셔야합니다.".showDialogForPermission()
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    private fun showDialogForPermission(msg: String) {
+    private fun String.showDialogForPermission() {
         val builder = AlertDialog.Builder(this@CameraActivity)
         builder.setTitle("알림")
-        builder.setMessage(msg)
+        builder.setMessage(this)
         builder.setCancelable(false)
         builder.setPositiveButton(
             "예"
@@ -377,7 +401,9 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
                 arrayOf(
                     Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.INTERNET,
+                    Manifest.permission.RECORD_AUDIO
                 ),
                 CAMERA_PERMISSION_REQUEST_CODE
             )
@@ -394,17 +420,17 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
             if(result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA){
                 Log.e("TTS", "This Language is not supported")
             } else {
-                speakOut()
+                Log.d("TTS", "success")
             }
         } else {
             Log.e("TTS", "Initialization Failed")
         }
     }
 
-    private fun speakOut() {
-        val text: CharSequence = "안녕하세요."
-        tts!!.setPitch(0.6f)
-        tts!!.setSpeechRate(0.1f)
+    private fun speakOut(result: String) {
+        val text: CharSequence = result + "를 발견했습니다."
+        tts!!.setPitch(1.0f)
+        tts!!.setSpeechRate(1.0f)
         tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null, "id1")
     }
 }

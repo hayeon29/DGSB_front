@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="30dp"
+    android:layout_marginLeft="30dp"
+    android:background="@drawable/drawable_radius"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="30dp"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:text="사진을 가져올 곳을 선택해주세요"
+            android:textSize="20sp"
+            android:textColor="@color/black">
+        </TextView>
+    </LinearLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="20dp">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dialog_gallery"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:text="갤러리"
+            android:textSize="20sp"
+            android:background="@drawable/yes_button_radius"
+            android:textColor="@color/white"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="30dp"
+
+            >
+        </androidx.appcompat.widget.AppCompatButton>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dialog_photo"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:text="사진"
+            android:textSize="20sp"
+            android:background="@drawable/yes_button_radius"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            >
+        </androidx.appcompat.widget.AppCompatButton>
+    </RelativeLayout>
+
+</LinearLayout>

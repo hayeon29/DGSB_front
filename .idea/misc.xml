@@ -4,13 +4,19 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/drawable/background_gradient.xml" value="0.2" />
+        <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/drawable/drawable_radius.xml" value="0.26979166666666665" />
         <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/drawable/gradient_background.xml" value="0.14583333333333334" />
         <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/drawable/ic_main_background.xml" value="0.14583333333333334" />
+        <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/drawable/no_button_radius.xml" value="0.17447916666666666" />
         <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/drawable/shape_for_circle_button.xml" value="0.1421875" />
-        <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/layout/activity_camera.xml" value="0.264" />
+        <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/drawable/yes_button_radius.xml" value="0.17447916666666666" />
+        <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/layout/activity_camera.xml" value="0.2" />
         <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/layout/activity_camera_button.xml" value="0.264" />
-        <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/layout/activity_main.xml" value="0.1296875" />
+        <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/layout/activity_face_camera.xml" value="0.11875" />
+        <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/layout/activity_main.xml" value="0.176" />
         <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/layout/activity_splash.xml" value="0.264" />
+        <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/layout/dialog.xml" value="0.264" />
+        <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/layout/gallery_or_picture_dialog.xml" value="0.264" />
         <entry key="..\:/Users/yunyo/teamproject6/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.26979166666666665" />
         <entry key="..\:/Users/yunyo/teamproject6/app/src/main/res/drawable/drawable_radius.xml" value="0.26979166666666665" />
         <entry key="..\:/Users/yunyo/teamproject6/app/src/main/res/drawable/ic_launcher_background.xml" value="0.26979166666666665" />

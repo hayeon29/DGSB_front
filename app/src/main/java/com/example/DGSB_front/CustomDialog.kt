@@ -17,7 +17,7 @@ class CustomDialog(val finishApp:() -> Unit): DialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = DialogBinding.inflate(inflater, container, false)
         val view = binding.root
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

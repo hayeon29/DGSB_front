@@ -1,12 +1,9 @@
 package org.opencv.android;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.ImageFormat;
-import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
@@ -30,15 +27,12 @@ import org.opencv.imgproc.Imgproc;
  * When frame is delivered via callback from Camera - it processed via OpenCV to be
  * converted to RGBA32 and then passed to the external callback for modifications if required.
  */
-
 public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallback {
-
-
 
     private static final int MAGIC_TEXTURE_ID = 10;
     private static final String TAG = "JavaCameraView";
 
-    private byte[] mBuffer;
+    private byte mBuffer[];
     private Mat[] mFrameChain;
     private int mChainIdx = 0;
     private Thread mThread;
@@ -48,8 +42,6 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
     protected JavaCameraFrame[] mCameraFrame;
     private SurfaceTexture mSurfaceTexture;
     private int mPreviewFormat = ImageFormat.NV21;
-
-
 
     public static class JavaCameraSizeAccessor implements ListItemAccessor {
 
@@ -72,19 +64,6 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
 
     public JavaCameraView(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    protected void setDisplayOrientation(Camera camera, int angle){
-        Method downPolymorphic;
-        try
-        {
-            downPolymorphic = camera.getClass().getMethod("setDisplayOrientation", int.class);
-            downPolymorphic.invoke(camera, angle);
-        }
-        catch (Exception e1)
-        {
-            e1.printStackTrace();
-        }
     }
 
     protected boolean initializeCamera(int width, int height) {
@@ -161,7 +140,7 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
             try {
                 Camera.Parameters params = mCamera.getParameters();
                 Log.d(TAG, "getSupportedPreviewSizes()");
-                List<android.hardware.Camera.Size> sizes = params.getSupportedPreviewSizes();
+                List<Camera.Size> sizes = params.getSupportedPreviewSizes();
 
                 if (sizes != null) {
                     /* Select the size that fits surface considering maximum size allowed */
@@ -185,7 +164,7 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
                     Log.d(TAG, "Set preview size to " + Integer.valueOf((int)frameSize.width) + "x" + Integer.valueOf((int)frameSize.height));
                     params.setPreviewSize((int)frameSize.width, (int)frameSize.height);
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && !android.os.Build.MODEL.equals("GT-I9100"))
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && !Build.MODEL.equals("GT-I9100"))
                         params.setRecordingHint(true);
 
                     List<String> FocusModes = params.getSupportedFocusModes();
@@ -234,8 +213,6 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
 
                     /* Finally we are ready to start the preview */
                     Log.d(TAG, "startPreview");
-                    setDisplayOrientation(mCamera, 90);
-                    mCamera.setPreviewDisplay(getHolder());
                     mCamera.startPreview();
                 }
                 else
@@ -363,11 +340,11 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
             mRgba.release();
         }
 
-        private final Mat mYuvFrameData;
-        private final Mat mRgba;
-        private final int mWidth;
-        private final int mHeight;
-    }
+        private Mat mYuvFrameData;
+        private Mat mRgba;
+        private int mWidth;
+        private int mHeight;
+    };
 
     private class CameraWorker implements Runnable {
 

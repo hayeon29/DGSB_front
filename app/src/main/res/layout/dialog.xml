@@ -11,12 +11,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         >
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="30dp"
             android:textAlignment="center"
             android:gravity="center"
             android:text="종료 하시겠습니까?"
@@ -30,31 +30,33 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
-        <Button
-            android:id="@+id/dialog_no"
-            android:layout_width="120dp"
-            android:layout_height="60dp"
-            android:layout_alignParentRight="true"
-            android:text="아니오"
-            android:textSize="20sp"
-            android:backgroundTint="#CC3D3D"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="20dp">
-        </Button>
-        <Button
+        android:gravity="center"
+        android:layout_marginBottom="20dp">
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/dialog_yes"
             android:layout_width="120dp"
             android:layout_height="60dp"
-            android:layout_alignParentLeft="true"
             android:text="예"
             android:textSize="20sp"
-            android:backgroundTint="#342FC7"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="10dp"
-            >
+            android:background="@drawable/yes_button_radius"
+            android:textColor="@color/white"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="30dp"
 
-        </Button>
+            >
+        </androidx.appcompat.widget.AppCompatButton>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dialog_no"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:text="아니오"
+            android:textSize="20sp"
+            android:background="@drawable/no_button_radius"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            >
+        </androidx.appcompat.widget.AppCompatButton>
     </RelativeLayout>
 
 </LinearLayout>

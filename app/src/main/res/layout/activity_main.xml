@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:opencv="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,30 +10,54 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <Button
-            android:id="@+id/startCamera"
-            android:layout_width="150dp"
-            android:layout_height="75dp"
-            android:layout_centerInParent="true"
-            android:text="카메라"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:backgroundTint="@color/black"
-            >
-        </Button>
-
-        <Button
-            android:id="@+id/exitApp"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:backgroundTint="#FF0000"
-            android:text="종료"
-            android:textSize="17sp"
-            android:layout_margin="5dp"
-            >
-        </Button>
+            android:orientation="vertical"
+            android:layout_centerInParent="true">
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_transparent"
+                android:layout_marginBottom="20dp"
+                >
+
+            </ImageView>
+            <Button
+                android:id="@+id/startCamera"
+                android:layout_width="300dp"
+                android:layout_height="75dp"
+                android:text="카메라"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:backgroundTint="#5586EB"
+                >
+            </Button>
+
+            <Button
+                android:id="@+id/faceRegister"
+                android:layout_width="300dp"
+                android:layout_height="75dp"
+                android:text="얼굴 정보 등록"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:backgroundTint="#003399"
+                >
+            </Button>
+
+            <Button
+                android:id="@+id/exitApp"
+                android:layout_width="300dp"
+                android:layout_height="75dp"
+                android:backgroundTint="@color/black"
+                android:text="종료"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                >
+            </Button>
+        </LinearLayout>
+
     </RelativeLayout>
 
 </LinearLayout>
