@@ -47,6 +47,9 @@
         <activity android:name=".FaceCameraActivity"
             android:screenOrientation="portrait"
             android:label="얼굴 등록 카메라 실행"/>
+        <activity android:name=".FaceRegister"
+            android:screenOrientation="portrait"
+            android:label="얼굴 등록 페이지"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.DGSB_front"

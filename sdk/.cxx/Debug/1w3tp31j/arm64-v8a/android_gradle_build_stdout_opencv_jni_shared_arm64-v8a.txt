@@ -1,0 +1,2 @@
+ninja: Entering directory `C:\Users\pc\android\DGSB_front\sdk\.cxx\Debug\1w3tp31j\arm64-v8a'
+ninja: no work to do.

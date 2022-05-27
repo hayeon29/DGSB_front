@@ -1,0 +1,3 @@
+C:/Users/pc/android/DGSB_front/sdk/.cxx/Debug/1w3tp31j/arm64-v8a/CMakeFiles/opencv_jni_shared.dir
+C:/Users/pc/android/DGSB_front/sdk/.cxx/Debug/1w3tp31j/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/pc/android/DGSB_front/sdk/.cxx/Debug/1w3tp31j/arm64-v8a/CMakeFiles/rebuild_cache.dir

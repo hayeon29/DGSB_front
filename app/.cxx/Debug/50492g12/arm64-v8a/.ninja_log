@@ -1,0 +1,7 @@
+# ninja log v5
+1	2106	675287695	CMakeFiles/native-lib.dir/native-lib.cpp.o	5ab0245752ca4239
+2107	2248	675287695	C:/Users/pc/android/DGSB_front/app/build/intermediates/cxx/Debug/50492g12/obj/arm64-v8a/libnative-lib.so	60e990c02dc4bb60
+1	5	0	clean	37820e5847d0447b
+0	4	0	clean	37820e5847d0447b
+2	1384	675366304	CMakeFiles/native-lib.dir/native-lib.cpp.o	5ab0245752ca4239
+1384	1618	675366304	C:/Users/pc/android/DGSB_front/app/build/intermediates/cxx/Debug/50492g12/obj/arm64-v8a/libnative-lib.so	60e990c02dc4bb60

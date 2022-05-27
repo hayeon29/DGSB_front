@@ -1,0 +1,42 @@
+{
+  "stringTable": {},
+  "buildFiles": [
+    "C:\\Users\\pc\\android\\DGSB_front\\app\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\pc\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\pc\\android\\DGSB_front\\app\\.cxx\\Debug\\50492g12\\x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\pc\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\pc\\android\\DGSB_front\\app\\.cxx\\Debug\\50492g12\\x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "native-lib-Debug-x86_64": {
+      "buildCommandComponents": [
+        "C:\\Users\\pc\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
+        "-C",
+        "C:\\Users\\pc\\android\\DGSB_front\\app\\.cxx\\Debug\\50492g12\\x86_64",
+        "native-lib"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "native-lib",
+      "output": "C:\\Users\\pc\\android\\DGSB_front\\app\\build\\intermediates\\cxx\\Debug\\50492g12\\obj\\x86_64\\libnative-lib.so",
+      "runtimeFiles": [
+        "C:\\Users\\pc\\android\\DGSB_front\\sdk\\native\\libs\\x86_64\\libopencv_java4.so"
+      ]
+    }
+  },
+  "toolchains": {},
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

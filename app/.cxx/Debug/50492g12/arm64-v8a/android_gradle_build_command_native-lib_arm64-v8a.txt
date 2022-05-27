@@ -1,0 +1,7 @@
+Executable : C:\Users\pc\AppData\Local\Android\Sdk\cmake\3.10.2.4988404\bin\ninja.exe
+arguments : 
+-C
+C:\Users\pc\android\DGSB_front\app\.cxx\Debug\50492g12\arm64-v8a
+native-lib
+jvmArgs : 
+

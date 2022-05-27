@@ -20,42 +20,56 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon_transparent"
+                >
+            </ImageView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DGSB"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
                 android:layout_marginBottom="20dp"
                 >
-
-            </ImageView>
-            <Button
+            </TextView>
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/startCamera"
                 android:layout_width="300dp"
                 android:layout_height="75dp"
                 android:text="카메라"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="20sp"
-                android:backgroundTint="#5586EB"
+                android:background="@drawable/radius_button"
+                android:layout_marginBottom="20dp"
                 >
-            </Button>
+            </androidx.appcompat.widget.AppCompatButton>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/faceRegister"
                 android:layout_width="300dp"
                 android:layout_height="75dp"
                 android:text="얼굴 정보 등록"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="20sp"
-                android:backgroundTint="#003399"
+                android:background="@drawable/radius_button"
+                android:layout_marginBottom="20dp"
                 >
-            </Button>
+            </androidx.appcompat.widget.AppCompatButton>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/exitApp"
                 android:layout_width="300dp"
                 android:layout_height="75dp"
-                android:backgroundTint="@color/black"
                 android:text="종료"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="20sp"
+                android:background="@drawable/radius_button"
                 >
-            </Button>
+            </androidx.appcompat.widget.AppCompatButton>
         </LinearLayout>
 
     </RelativeLayout>

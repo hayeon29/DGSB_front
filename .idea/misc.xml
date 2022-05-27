@@ -3,6 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/drawable/drawable_radius.xml" value="0.193" />
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/drawable/gradient_background.xml" value="0.193" />
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/drawable/no_button_radius.xml" value="0.193" />
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/drawable/radius_button.xml" value="0.192" />
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/drawable/shadow.xml" value="0.192" />
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/drawable/shape_for_circle_button.xml" value="0.193" />
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/drawable/yes_button_radius.xml" value="0.193" />
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/layout/activity_camera.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/layout/activity_camera_button.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/layout/activity_face_camera.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/layout/activity_face_register.xml" value="0.25" />
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/pc/android/DGSB_front/app/src/main/res/layout/activity_splash.xml" value="0.18489583333333334" />
         <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/drawable/background_gradient.xml" value="0.2" />
         <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/drawable/drawable_radius.xml" value="0.26979166666666665" />
         <entry key="..\:/Users/yunyo/android/DGSB_front/app/src/main/res/drawable/gradient_background.xml" value="0.14583333333333334" />

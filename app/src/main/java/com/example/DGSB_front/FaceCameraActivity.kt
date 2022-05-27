@@ -3,6 +3,7 @@ package com.example.DGSB_front
 import android.Manifest
 import android.annotation.TargetApi
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
@@ -42,10 +43,9 @@ class FaceCameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraView
     private var matInput: Mat? = null
     private var matResult: Mat? = null
     private var filePath: String? = ""
-    private val baseUrl: String = "http://34.229.31.234:8000/"
 
+    private var filePathList: ArrayList<String> = ArrayList<String>()
     private var mOpenCvCameraView: CameraBridgeViewBase? = null
-    private var networkService: NetworkService? = null
     lateinit var faceCameraBtn: AppCompatButton
 
     companion object {
@@ -73,7 +73,6 @@ class FaceCameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraView
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -93,14 +92,21 @@ class FaceCameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraView
         mOpenCvCameraView!!.setCameraIndex(1) // front-camera(1),  back-camera(0)
         faceCameraBtn = findViewById<AppCompatButton>(R.id.faceCameraBtn)
 
-        baseUrl.initNetwork()
+        val getIntent: Intent = Intent()
+        val size: Int = getIntent.getIntExtra("size", 10)
 
         faceCameraBtn.setOnClickListener {
-            10.getMultiplePhoto() //size = 10
+            size.getMultiplePhoto() //size = 10
+            val intent = Intent(this, FaceRegister::class.java)
+            intent.putExtra("photoList", filePathList)
+            Log.d("photoList", filePathList.toString())
+            setResult(RESULT_OK, intent)
+            if(!isFinishing){
+                finish()
+            }
         }
     }
     private fun Int.getMultiplePhoto() {
-        val filePathList: Array<String> = Array<String>(this){""}
         for(i:Int in 0 until this){
             var bmp: Bitmap? = null
             try {
@@ -114,26 +120,8 @@ class FaceCameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraView
             Log.d("Uri: ", uri.toString())
             filePath = getRealPathFromURI(uri!!)
             Log.d("Uri Path: ", filePath.toString())
-            filePathList[i] = filePath!!
+            filePathList!!.add(filePath!!)
         }
-        uploadPhoto(filePathList, this)
-    }
-
-    private fun String.initNetwork() {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client: OkHttpClient = OkHttpClient.Builder()
-            .addInterceptor(interceptor)
-            .connectTimeout(10, TimeUnit.MINUTES)
-            .build()
-
-        val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(this)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        networkService = retrofit.create(NetworkService::class.java)
     }
 
     public override fun onPause() {
@@ -193,37 +181,6 @@ class FaceCameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraView
             cursor.close()
         }
         return result
-    }
-
-    private fun uploadPhoto(image_path_array: Array<String>, size: Int) {
-        val bodies: Array<MultipartBody.Part?> = arrayOfNulls<MultipartBody.Part>(10)
-        var requestBody: RequestBody
-        var imageFile: File
-        for (i:Int in 0 until size){
-            imageFile = File(image_path_array[i])
-            requestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), imageFile)
-            bodies[i] = MultipartBody.Part.createFormData("faceList", imageFile.name, requestBody)
-        }
-
-        val call = networkService!!.registerFace("name", bodies)
-
-        call.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.isSuccessful){
-                    Log.i("Face", "Success")
-                    val resultBody = response.body()
-                    val resultString: String = resultBody!!.string()
-                    Log.i("body_result", resultString)
-                }else run {
-                    val statusCode: Int = response.code()
-                    Log.i("Face", "StatusCode: $statusCode")
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.i("Face", "FailMessage: " + t.message)
-            }
-        })
     }
 
     override fun onStart() {

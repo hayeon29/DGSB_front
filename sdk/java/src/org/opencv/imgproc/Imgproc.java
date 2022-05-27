@@ -6527,7 +6527,7 @@ public class Imgproc {
     public static int floodFill(Mat image, Mat mask, Point seedPoint, Scalar newVal, Rect rect, Scalar loDiff, Scalar upDiff, int flags) {
         double[] rect_out = new double[4];
         int retVal = floodFill_0(image.nativeObj, mask.nativeObj, seedPoint.x, seedPoint.y, newVal.val[0], newVal.val[1], newVal.val[2], newVal.val[3], rect_out, loDiff.val[0], loDiff.val[1], loDiff.val[2], loDiff.val[3], upDiff.val[0], upDiff.val[1], upDiff.val[2], upDiff.val[3], flags);
-        if(rect!=null){ rect.x = (int)rect_out[0]; rect.y = (int)rect_out[1]; rect.width = (int)rect_out[2]; rect.height = (int)rect_out[3]; } 
+        if(rect!=null){ rect.x = (int)rect_out[0]; rect.y = (int)rect_out[1]; rect.width = (int)rect_out[2]; rect.height = (int)rect_out[3]; }
         return retVal;
     }
 
@@ -6628,7 +6628,7 @@ public class Imgproc {
     public static int floodFill(Mat image, Mat mask, Point seedPoint, Scalar newVal, Rect rect, Scalar loDiff, Scalar upDiff) {
         double[] rect_out = new double[4];
         int retVal = floodFill_1(image.nativeObj, mask.nativeObj, seedPoint.x, seedPoint.y, newVal.val[0], newVal.val[1], newVal.val[2], newVal.val[3], rect_out, loDiff.val[0], loDiff.val[1], loDiff.val[2], loDiff.val[3], upDiff.val[0], upDiff.val[1], upDiff.val[2], upDiff.val[3]);
-        if(rect!=null){ rect.x = (int)rect_out[0]; rect.y = (int)rect_out[1]; rect.width = (int)rect_out[2]; rect.height = (int)rect_out[3]; } 
+        if(rect!=null){ rect.x = (int)rect_out[0]; rect.y = (int)rect_out[1]; rect.width = (int)rect_out[2]; rect.height = (int)rect_out[3]; }
         return retVal;
     }
 
@@ -6728,7 +6728,7 @@ public class Imgproc {
     public static int floodFill(Mat image, Mat mask, Point seedPoint, Scalar newVal, Rect rect, Scalar loDiff) {
         double[] rect_out = new double[4];
         int retVal = floodFill_2(image.nativeObj, mask.nativeObj, seedPoint.x, seedPoint.y, newVal.val[0], newVal.val[1], newVal.val[2], newVal.val[3], rect_out, loDiff.val[0], loDiff.val[1], loDiff.val[2], loDiff.val[3]);
-        if(rect!=null){ rect.x = (int)rect_out[0]; rect.y = (int)rect_out[1]; rect.width = (int)rect_out[2]; rect.height = (int)rect_out[3]; } 
+        if(rect!=null){ rect.x = (int)rect_out[0]; rect.y = (int)rect_out[1]; rect.width = (int)rect_out[2]; rect.height = (int)rect_out[3]; }
         return retVal;
     }
 
@@ -6827,7 +6827,7 @@ public class Imgproc {
     public static int floodFill(Mat image, Mat mask, Point seedPoint, Scalar newVal, Rect rect) {
         double[] rect_out = new double[4];
         int retVal = floodFill_3(image.nativeObj, mask.nativeObj, seedPoint.x, seedPoint.y, newVal.val[0], newVal.val[1], newVal.val[2], newVal.val[3], rect_out);
-        if(rect!=null){ rect.x = (int)rect_out[0]; rect.y = (int)rect_out[1]; rect.width = (int)rect_out[2]; rect.height = (int)rect_out[3]; } 
+        if(rect!=null){ rect.x = (int)rect_out[0]; rect.y = (int)rect_out[1]; rect.width = (int)rect_out[2]; rect.height = (int)rect_out[3]; }
         return retVal;
     }
 
@@ -7759,7 +7759,7 @@ public class Imgproc {
         double[] center_out = new double[2];
         double[] radius_out = new double[1];
         minEnclosingCircle_0(points_mat.nativeObj, center_out, radius_out);
-        if(center!=null){ center.x = center_out[0]; center.y = center_out[1]; } 
+        if(center!=null){ center.x = center_out[0]; center.y = center_out[1]; }
         if(radius!=null) radius[0] = (float)radius_out[0];
     }
 
@@ -9312,8 +9312,8 @@ public class Imgproc {
         double[] pt1_out = new double[2];
         double[] pt2_out = new double[2];
         boolean retVal = clipLine_0(imgRect.x, imgRect.y, imgRect.width, imgRect.height, pt1.x, pt1.y, pt1_out, pt2.x, pt2.y, pt2_out);
-        if(pt1!=null){ pt1.x = pt1_out[0]; pt1.y = pt1_out[1]; } 
-        if(pt2!=null){ pt2.x = pt2_out[0]; pt2.y = pt2_out[1]; } 
+        if(pt1!=null){ pt1.x = pt1_out[0]; pt1.y = pt1_out[1]; }
+        if(pt2!=null){ pt2.x = pt2_out[0]; pt2.y = pt2_out[1]; }
         return retVal;
     }
 
@@ -9558,14 +9558,14 @@ public class Imgproc {
 
 
 
-// C++: Size getTextSize(const String& text, int fontFace, double fontScale, int thickness, int* baseLine);
+    // C++: Size getTextSize(const String& text, int fontFace, double fontScale, int thickness, int* baseLine);
 //javadoc:getTextSize(text, fontFace, fontScale, thickness, baseLine)
-public static Size getTextSize(String text, int fontFace, double fontScale, int thickness, int[] baseLine) {
-    if(baseLine != null && baseLine.length != 1)
-        throw new IllegalArgumentException("'baseLine' must be 'int[1]' or 'null'.");
-    Size retVal = new Size(n_getTextSize(text, fontFace, fontScale, thickness, baseLine));
-    return retVal;
-}
+    public static Size getTextSize(String text, int fontFace, double fontScale, int thickness, int[] baseLine) {
+        if(baseLine != null && baseLine.length != 1)
+            throw new IllegalArgumentException("'baseLine' must be 'int[1]' or 'null'.");
+        Size retVal = new Size(n_getTextSize(text, fontFace, fontScale, thickness, baseLine));
+        return retVal;
+    }
 
 
 
@@ -10130,6 +10130,6 @@ public static Size getTextSize(String text, int fontFace, double fontScale, int 
     private static native void HoughLinesWithAccumulator_2(long image_nativeObj, long lines_nativeObj, double rho, double theta, int threshold, double srn, double stn);
     private static native void HoughLinesWithAccumulator_3(long image_nativeObj, long lines_nativeObj, double rho, double theta, int threshold, double srn);
     private static native void HoughLinesWithAccumulator_4(long image_nativeObj, long lines_nativeObj, double rho, double theta, int threshold);
-private static native double[] n_getTextSize(String text, int fontFace, double fontScale, int thickness, int[] baseLine);
+    private static native double[] n_getTextSize(String text, int fontFace, double fontScale, int thickness, int[] baseLine);
 
 }

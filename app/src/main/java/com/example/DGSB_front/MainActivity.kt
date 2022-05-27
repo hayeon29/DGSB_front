@@ -27,9 +27,9 @@ import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var exitApp: Button
-    lateinit var startCamera: Button
-    lateinit var faceRegister: Button
+    lateinit var exitApp: AppCompatButton
+    lateinit var startCamera: AppCompatButton
+    lateinit var faceRegister: AppCompatButton
     lateinit var getFaceFromPhotoButton: AppCompatButton
     lateinit var getFaceFromGalleryButton: AppCompatButton
 
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         faceRegister.setOnClickListener {
-            val intent = Intent(applicationContext, FaceCameraActivity::class.java)
+            val intent = Intent(applicationContext, FaceRegister::class.java)
             startActivity(intent)
         }
 
