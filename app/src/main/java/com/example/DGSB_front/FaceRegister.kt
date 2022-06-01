@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit
 class FaceRegister: AppCompatActivity() {
     lateinit var edtName: EditText
     lateinit var cameraBtn: AppCompatButton
-    lateinit var galleryBtn: AppCompatButton
     lateinit var sendBtn: AppCompatButton
     lateinit var returnBtn: AppCompatButton
     private lateinit var getResultPhoto: ActivityResultLauncher<Intent>
@@ -56,7 +55,6 @@ class FaceRegister: AppCompatActivity() {
 
         edtName = findViewById<EditText>(R.id.edtName)
         cameraBtn = findViewById<AppCompatButton>(R.id.cameraBtn)
-        galleryBtn = findViewById<AppCompatButton>(R.id.galleryBtn)
         sendBtn = findViewById<AppCompatButton>(R.id.sendBtn)
         returnBtn = findViewById<AppCompatButton>(R.id.returnBtn)
 

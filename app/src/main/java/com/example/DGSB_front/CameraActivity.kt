@@ -3,7 +3,9 @@ package com.example.DGSB_front
 import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
-import android.content.*
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.media.MediaActionSound
@@ -15,13 +17,20 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.util.Log
-import android.view.SurfaceView
-import android.view.View
-import android.view.WindowManager
+import android.view.*
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONObject
 import org.opencv.android.*
 import org.opencv.core.CvException
 import org.opencv.core.Mat
@@ -31,20 +40,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.*
+import java.nio.charset.Charset
 import java.util.*
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-
-import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
-
-import okhttp3.logging.HttpLoggingInterceptor
-
-import android.widget.Toast
-
-import android.speech.RecognitionListener
-import android.widget.Button
 import java.util.concurrent.TimeUnit
 
 class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewListener2, TextToSpeech.OnInitListener {
@@ -296,9 +293,16 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
                 if(response.isSuccessful){
                     Log.i("project", "Success")
                     val resultBody = response.body()
-                    val resultString: String = resultBody!!.string()
+                    val resultString: String = String(resultBody!!.bytes(), Charset.forName("utf-8"))
                     Log.i("body_result", resultString)
-                    speakOut(resultString)
+
+                    val objects = JSONObject(resultString).getString("object")
+                    val text = JSONObject(resultString).getString("text")
+                    val face = JSONObject(resultString).getString("face")
+
+                    val detectResult: DetectResult = DetectResult(objects, text, face)
+                    val detectResultString: String = "물체 " + detectResult.objects + ", 글씨 " + detectResult.text + ", 얼굴 " + detectResult.face + "를 발견했습니다."
+                    speakOut(detectResultString)
                 }else run {
                     val statusCode: Int = response.code()
                     Log.i("project", "StatusCode: $statusCode")
@@ -311,7 +315,19 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         })
     }
 
+    private fun showToast(msg: String){
+        val inflater: LayoutInflater = layoutInflater
+        val layout: View = inflater.inflate(R.layout.toast, findViewById(R.id.toast_layout))
+        val toastMsg= layout.findViewById<TextView>(R.id.toast_msg)
 
+        val toast: Toast = Toast(this)
+        toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
+        toast.duration = Toast.LENGTH_LONG
+        toast.view = layout
+
+        toast.setText(msg)
+        toast.show()
+    }
 
     private fun getAuth(){
         val call = networkService!!.getAuth()
