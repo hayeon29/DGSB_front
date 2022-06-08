@@ -61,6 +61,13 @@
     <output-test url="file://$MODULE_DIR$/../../../sdk/build/intermediates/javac/debugUnitTest/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../sdk">
+      <sourceFolder url="file://$MODULE_DIR$/../../../sdk/build/generated/aidl_source_output_dir/debug/out" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../sdk/build/generated/ap_generated_sources/debug/out" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../sdk/build/generated/res/resValues/debug" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../sdk/build/generated/source/buildConfig/debug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../sdk/java/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../sdk/java/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../sdk/libcxx_helper" type="native-Source-root" />
       <excludeFolder url="file://$MODULE_DIR$/../../../sdk/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../../sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/../../../sdk/.cxx" />
@@ -68,5 +75,10 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 31 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.10" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.6.10" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.6.10" level="project" />
   </component>
 </module>

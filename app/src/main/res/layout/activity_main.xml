@@ -22,17 +22,6 @@
                 android:src="@drawable/icon_transparent"
                 >
             </ImageView>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="DGSB"
-                android:textAlignment="center"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginBottom="20dp"
-                >
-            </TextView>
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/startCamera"
                 android:layout_width="300dp"

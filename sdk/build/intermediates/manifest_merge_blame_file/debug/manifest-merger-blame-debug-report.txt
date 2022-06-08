@@ -4,12 +4,12 @@
 4
 5    <uses-sdk
 6        android:minSdkVersion="21"
-6-->C:\Users\pc\android\DGSB_front\sdk\java\AndroidManifest.xml
+6-->D:\Users\yunyo\android\DGSB_front\sdk\java\AndroidManifest.xml
 7        android:targetSdkVersion="31" />
-7-->C:\Users\pc\android\DGSB_front\sdk\java\AndroidManifest.xml
+7-->D:\Users\yunyo\android\DGSB_front\sdk\java\AndroidManifest.xml
 8
 9    <uses-permission android:name="android.permission.CAMERA" />
-9-->C:\Users\pc\android\DGSB_front\sdk\java\AndroidManifest.xml:5:5-65
-9-->C:\Users\pc\android\DGSB_front\sdk\java\AndroidManifest.xml:5:22-62
+9-->D:\Users\yunyo\android\DGSB_front\sdk\java\AndroidManifest.xml:5:5-65
+9-->D:\Users\yunyo\android\DGSB_front\sdk\java\AndroidManifest.xml:5:22-62
 10
 11</manifest>

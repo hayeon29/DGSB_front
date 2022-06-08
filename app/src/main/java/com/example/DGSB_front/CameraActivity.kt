@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.media.MediaActionSound
 import android.net.Uri
 import android.os.Build
@@ -48,7 +49,7 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
     private var matInput: Mat? = null //openCV에서 가장 기본이 되는 구조체. Matrix
     private var matResult: Mat? = null
     private var recording: Boolean = false
-    private val baseUrl: String = "http://34.229.31.234:8000/"
+    private val baseUrl: String = "http://3.39.167.118:8000/"
     private var currentPhotoPath: String = ""
     private var headers: MutableMap<String, String> = mutableMapOf()
     private var filePath: String? = ""
@@ -146,6 +147,7 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         try {
             bmp = Bitmap.createBitmap(matResult!!.cols(), matResult!!.rows(), Bitmap.Config.ARGB_8888)
             Utils.matToBitmap(matResult, bmp)
+            bmp = rotateBitmap(bmp, 90f)
         } catch (e: CvException) {
             Log.d("Exception", e.message!!)
         }
@@ -300,9 +302,34 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
                     val text = JSONObject(resultString).getString("text")
                     val face = JSONObject(resultString).getString("face")
 
+
+
                     val detectResult: DetectResult = DetectResult(objects, text, face)
-                    val detectResultString: String = "물체 " + detectResult.objects + ", 글씨 " + detectResult.text + ", 얼굴 " + detectResult.face + "를 발견했습니다."
-                    speakOut(detectResultString)
+                    if (detectResult.objects == "null" || detectResult.objects == "[]"){
+                        detectResult.objects = ""
+                    } else {
+                        detectResult.objects = "물체, " + detectResult.objects
+                    }
+                    if (detectResult.text == "null" || detectResult.text == "[]"){
+                        detectResult.text = ""
+                    } else {
+                        detectResult.text = "텍스트, " + detectResult.text
+                    }
+                    if (detectResult.face == "null" || detectResult.face == "[]"){
+                        detectResult.face = ""
+                    } else {
+                        detectResult.face = "얼굴, " + detectResult.face
+                    }
+                    Log.i("body_result", detectResult.objects + ", " + detectResult.text + ", " + detectResult.face)
+                    val detectResultString: String = detectResult.objects + detectResult.text + detectResult.face
+                    if(detectResult.objects == "" && detectResult.text == "" && detectResult.face == ""){
+                        showToast("발견된 물체가 없습니다.")
+                        speakOut("발견된 물체가 없습니다.")
+                    } else {
+                        showToast(detectResultString + "발견!")
+                        speakOut(detectResultString + "발견!")
+                    }
+
                 }else run {
                     val statusCode: Int = response.code()
                     Log.i("project", "StatusCode: $statusCode")
@@ -315,17 +342,19 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
         })
     }
 
+    private fun rotateBitmap(source: Bitmap, angle: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+    }
+
     private fun showToast(msg: String){
-        val inflater: LayoutInflater = layoutInflater
-        val layout: View = inflater.inflate(R.layout.toast, findViewById(R.id.toast_layout))
-        val toastMsg= layout.findViewById<TextView>(R.id.toast_msg)
+        val inflater: View = LayoutInflater.from(this).inflate(R.layout.toast,null)
+        val toastMsg= inflater.findViewById<TextView>(R.id.toast_msg)
+        toastMsg.text = msg
 
-        val toast: Toast = Toast(this)
-        toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
-        toast.duration = Toast.LENGTH_LONG
-        toast.view = layout
-
-        toast.setText(msg)
+        var toast: Toast = Toast(this)
+        toast.view = inflater
         toast.show()
     }
 
@@ -444,7 +473,7 @@ class CameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraViewList
     }
 
     private fun speakOut(result: String) {
-        val text: CharSequence = result + "를 발견했습니다."
+        val text: CharSequence = result
         tts!!.setPitch(1.0f)
         tts!!.setSpeechRate(1.0f)
         tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null, "id1")

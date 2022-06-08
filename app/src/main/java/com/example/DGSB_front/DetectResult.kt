@@ -4,6 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class DetectResult(
     var objects: String,
-    val text: String,
-    val face: String
+    var text: String,
+    var face: String
 )

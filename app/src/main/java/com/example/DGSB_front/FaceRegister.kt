@@ -1,9 +1,14 @@
 package com.example.DGSB_front
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,8 +38,9 @@ class FaceRegister: AppCompatActivity() {
     private var photoList: ArrayList<String>? = null
     private var photoSelected: Boolean = false
     private val size: Int = 10
-    private val baseUrl: String = "http://34.229.31.234:8000/"
+    private val baseUrl: String = "http://3.39.167.118:8000/"
     private var networkService: NetworkService? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +52,9 @@ class FaceRegister: AppCompatActivity() {
                 photoList = result.data?.getSerializableExtra("photoList") as ArrayList<String>?
                 photoSelected = true
                 if(photoList!!.isNotEmpty()){
-                    Toast.makeText(applicationContext, "사진 찍기가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                    showToast("사진 찍기가 완료되었습니다.")
                 } else {
-                    Toast.makeText(applicationContext, "사진 찍기가 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    showToast("사진 찍기가 실패했습니다.")
                 }
             }
         }
@@ -71,7 +77,7 @@ class FaceRegister: AppCompatActivity() {
             if(edtName.text.toString().isNotEmpty()){
                 uploadPhoto(photoList!!, size)
             } else {
-                Toast.makeText(applicationContext, "이름을 적어주세요.", Toast.LENGTH_SHORT).show()
+                showToast("이름을 적어주세요.")
             }
         }
 
@@ -126,5 +132,15 @@ class FaceRegister: AppCompatActivity() {
                 Log.i("Face", "FailMessage: " + t.message)
             }
         })
+    }
+
+    private fun showToast(msg: String){
+        val inflater: View = LayoutInflater.from(this).inflate(R.layout.toast,null)
+        val toastMsg= inflater.findViewById<TextView>(R.id.toast_msg)
+        toastMsg.text = msg
+
+        var toast: Toast = Toast(this)
+        toast.view = inflater
+        toast.show()
     }
 }

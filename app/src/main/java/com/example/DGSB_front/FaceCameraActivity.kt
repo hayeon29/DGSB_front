@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -112,6 +113,7 @@ class FaceCameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraView
             try {
                 bmp = Bitmap.createBitmap(matResult!!.cols(), matResult!!.rows(), Bitmap.Config.ARGB_8888)
                 Utils.matToBitmap(matResult, bmp)
+                bmp = rotateBitmap(bmp, -90f)
             } catch (e: CvException) {
                 Log.d("Exception", e.message!!)
             }
@@ -122,6 +124,12 @@ class FaceCameraActivity: AppCompatActivity(), CameraBridgeViewBase.CvCameraView
             Log.d("Uri Path: ", filePath.toString())
             filePathList!!.add(filePath!!)
         }
+    }
+
+    private fun rotateBitmap(source: Bitmap, angle: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
 
     public override fun onPause() {

@@ -14,6 +14,7 @@ interface NetworkService {
 
     @Multipart
     @POST("api/register-face/")
+    @Headers("Content-Type:application/x-www-form-urlencoded; charset=utf-8")
     fun registerFace(@Part("name") name: String, @Part file: Array<MultipartBody.Part?>): Call<ResponseBody>
 
     @GET("admin/")

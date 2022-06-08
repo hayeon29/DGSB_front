@@ -1,0 +1,44 @@
+[
+  {
+    "level_": 0,
+    "message_": "Start JSON generation. Platform version: 21 min SDK version: x86",
+    "file_": "D:\\Users\\yunyo\\android\\DGSB_front\\sdk\\libcxx_helper\\CMakeLists.txt",
+    "tag_": "debug|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 1036099626
+  },
+  {
+    "level_": 0,
+    "message_": "JSON \u0027D:\\Users\\yunyo\\android\\DGSB_front\\sdk\\.cxx\\Debug\\6286z285\\x86\\android_gradle_build.json\u0027 was up-to-date",
+    "file_": "D:\\Users\\yunyo\\android\\DGSB_front\\sdk\\libcxx_helper\\CMakeLists.txt",
+    "tag_": "debug|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 1416215499
+  },
+  {
+    "level_": 0,
+    "message_": "JSON generation completed without problems",
+    "file_": "D:\\Users\\yunyo\\android\\DGSB_front\\sdk\\libcxx_helper\\CMakeLists.txt",
+    "tag_": "debug|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 827988791
+  }
+]

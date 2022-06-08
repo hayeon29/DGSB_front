@@ -4,13 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/DGSB_front.iml" filepath="$PROJECT_DIR$/.idea/modules/DGSB_front.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/DGSB_front.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/DGSB_front.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/DGSB_front.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/DGSB_front.app.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/DGSB_front.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/DGSB_front.app.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/DGSB_front.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/DGSB_front.app.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdk/DGSB_front.sdk.iml" filepath="$PROJECT_DIR$/.idea/modules/sdk/DGSB_front.sdk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdk/DGSB_front.sdk.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/sdk/DGSB_front.sdk.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdk/DGSB_front.sdk.main.iml" filepath="$PROJECT_DIR$/.idea/modules/sdk/DGSB_front.sdk.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdk/DGSB_front.sdk.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/sdk/DGSB_front.sdk.unitTest.iml" />
     </modules>
   </component>
 </project>
